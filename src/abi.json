@@ -1,0 +1,991 @@
+{
+  "abi": [
+    { "inputs": [], "name": "AlreadyRevealed", "type": "error" },
+    { "inputs": [], "name": "EarlyCallForCloseRoom", "type": "error" },
+    { "inputs": [], "name": "HiddedMoveAlreadySet", "type": "error" },
+    { "inputs": [], "name": "InvalidBetAmount", "type": "error" },
+    {
+      "inputs": [
+        { "internalType": "bytes32", "name": "", "type": "bytes32" },
+        { "internalType": "bytes32", "name": "", "type": "bytes32" }
+      ],
+      "name": "InvalidData",
+      "type": "error"
+    },
+    { "inputs": [], "name": "InvalidFeeValue", "type": "error" },
+    { "inputs": [], "name": "InvalidMove", "type": "error" },
+    {
+      "inputs": [
+        { "internalType": "uint16", "name": "round", "type": "uint16" },
+        { "internalType": "uint16", "name": "roundCounter", "type": "uint16" }
+      ],
+      "name": "InvalidRound",
+      "type": "error"
+    },
+    { "inputs": [], "name": "InvalidTimeDuration", "type": "error" },
+    { "inputs": [], "name": "LowBetAmount", "type": "error" },
+    { "inputs": [], "name": "LowValue", "type": "error" },
+    { "inputs": [], "name": "NonexistentRoom", "type": "error" },
+    { "inputs": [], "name": "ReachedCloseRoomDeadline", "type": "error" },
+    { "inputs": [], "name": "SelfPlayProhibited", "type": "error" },
+    { "inputs": [], "name": "UnknownCaller", "type": "error" },
+    { "inputs": [], "name": "WithdrawFailed", "type": "error" },
+    { "inputs": [], "name": "WrongRoomStatus", "type": "error" },
+    { "inputs": [], "name": "ZeroAddress", "type": "error" },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "CurrencySent",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "feePercentage",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeePercentageSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "feeReceiver",
+          "type": "address"
+        }
+      ],
+      "name": "FeeReceiverSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "version",
+          "type": "uint8"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "minBetAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "MinimalBetAmountSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "entrant",
+          "type": "address"
+        }
+      ],
+      "name": "MoveAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "potReceiver",
+          "type": "address"
+        }
+      ],
+      "name": "OwnerCloseUnusedRoom",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "entrant",
+          "type": "address"
+        }
+      ],
+      "name": "PlayerExit",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "entrant",
+          "type": "address"
+        }
+      ],
+      "name": "PlayerRevealedMove",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "entrantA",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "entrantB",
+          "type": "address"
+        }
+      ],
+      "name": "PrivateRoomInitialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "referralAddr",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "referrerAddr",
+          "type": "address"
+        }
+      ],
+      "name": "ReferrerConnected",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "feeValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "ReferrerFeeSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint64",
+          "name": "deadlineToCloseRoom",
+          "type": "uint64"
+        }
+      ],
+      "name": "RoomCloseDeadlineSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "receiverAddr",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "pot",
+          "type": "uint256"
+        }
+      ],
+      "name": "RoomClosed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "entrantA",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "entrantB",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "currency",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "betAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RoomCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum RockPaperScissors.RoundWinnerOutcomes",
+          "name": "winner",
+          "type": "uint8"
+        }
+      ],
+      "name": "RoomGameHasDraw",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "opponent",
+          "type": "address"
+        }
+      ],
+      "name": "RoomGameStarted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "entrant",
+          "type": "address"
+        }
+      ],
+      "name": "RoomJoined",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "potReceiver",
+          "type": "address"
+        }
+      ],
+      "name": "UnusedRoomClosed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roomId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "winsEntrantA",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "winsEntrantB",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "entrantA",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "entrantB",
+          "type": "address"
+        }
+      ],
+      "name": "WinsCounterUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_ROUND",
+      "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MIN_WINS",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ONE_HUNDRED_PERCENT",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "activeRoomCounter",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" }
+      ],
+      "name": "closeRoom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "closeRoomDeadline",
+      "outputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" }
+      ],
+      "name": "exitRoom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "fee",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "feeReceiver",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" }
+      ],
+      "name": "getAllRoomRounds",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum RockPaperScissors.Moves",
+              "name": "moveA",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum RockPaperScissors.Moves",
+              "name": "moveB",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "encrMoveA",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "encrMoveB",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "enum RockPaperScissors.RoundWinnerOutcomes",
+              "name": "winner",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum RockPaperScissors.GameStages",
+              "name": "stage",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum RockPaperScissors.RoundStages",
+              "name": "roundStage",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct RockPaperScissors.GameRoomInfo[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" }
+      ],
+      "name": "getCloserAddress",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" }
+      ],
+      "name": "getCurrentRoomRound",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" }
+      ],
+      "name": "getRoomCloser",
+      "outputs": [
+        {
+          "internalType": "enum RockPaperScissors.Closer",
+          "name": "",
+          "type": "uint8"
+        },
+        { "internalType": "uint64", "name": "deadline", "type": "uint64" }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "indexFrom", "type": "uint256" },
+        { "internalType": "uint256", "name": "indexTo", "type": "uint256" }
+      ],
+      "name": "getRoomsInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "roomId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "playerA",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "playerB",
+                  "type": "address"
+                },
+                { "internalType": "uint8", "name": "wins", "type": "uint8" },
+                {
+                  "internalType": "address",
+                  "name": "token",
+                  "type": "address"
+                },
+                { "internalType": "uint256", "name": "bet", "type": "uint256" }
+              ],
+              "internalType": "struct RockPaperScissors.UniqRoomData",
+              "name": "data",
+              "type": "tuple"
+            },
+            { "internalType": "uint256", "name": "pot", "type": "uint256" },
+            {
+              "internalType": "uint16",
+              "name": "roundCounter",
+              "type": "uint16"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint8",
+                  "name": "winsPlayerA",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "winsPlayerB",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct RockPaperScissors.PlayerWinCounter",
+              "name": "winsCounter",
+              "type": "tuple"
+            },
+            {
+              "internalType": "enum RockPaperScissors.Closer",
+              "name": "closer",
+              "type": "uint8"
+            },
+            { "internalType": "uint64", "name": "deadline", "type": "uint64" },
+            {
+              "internalType": "enum RockPaperScissors.RoomStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum RockPaperScissors.WinnerStatus",
+              "name": "winnerStatus",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct RockPaperScissors.RoomInfo[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint8", "name": "wins", "type": "uint8" },
+        { "internalType": "address", "name": "currency", "type": "address" },
+        { "internalType": "uint256", "name": "betAmount", "type": "uint256" },
+        { "internalType": "address", "name": "playerB", "type": "address" },
+        { "internalType": "address", "name": "referrer", "type": "address" }
+      ],
+      "name": "initRoom",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "closeRoomDeadline_",
+          "type": "uint64"
+        },
+        { "internalType": "uint256", "name": "fee_", "type": "uint256" },
+        {
+          "internalType": "uint256",
+          "name": "minBetAmount_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "feeReceiver_",
+          "type": "address"
+        },
+        { "internalType": "uint256", "name": "referrerFee_", "type": "uint256" }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" },
+        { "internalType": "address", "name": "referrer", "type": "address" }
+      ],
+      "name": "joinRoom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minBetAmount",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256[]", "name": "roomIds", "type": "uint256[]" }
+      ],
+      "name": "ownerCloseRooms",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" },
+        { "internalType": "uint16", "name": "round", "type": "uint16" },
+        { "internalType": "bytes32", "name": "hiddenMove", "type": "bytes32" }
+      ],
+      "name": "playRoomGame",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "referrerFee",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "name": "referrers",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "roomId", "type": "uint256" },
+        { "internalType": "uint16", "name": "round", "type": "uint16" },
+        {
+          "internalType": "enum RockPaperScissors.Moves",
+          "name": "move",
+          "type": "uint8"
+        },
+        { "internalType": "string", "name": "salt", "type": "string" }
+      ],
+      "name": "reveal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "roomIdCounter",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "name": "rooms",
+      "outputs": [
+        {
+          "components": [
+            { "internalType": "uint256", "name": "roomId", "type": "uint256" },
+            { "internalType": "address", "name": "playerA", "type": "address" },
+            { "internalType": "address", "name": "playerB", "type": "address" },
+            { "internalType": "uint8", "name": "wins", "type": "uint8" },
+            { "internalType": "address", "name": "token", "type": "address" },
+            { "internalType": "uint256", "name": "bet", "type": "uint256" }
+          ],
+          "internalType": "struct RockPaperScissors.UniqRoomData",
+          "name": "data",
+          "type": "tuple"
+        },
+        { "internalType": "uint256", "name": "pot", "type": "uint256" },
+        { "internalType": "uint16", "name": "roundCounter", "type": "uint16" },
+        {
+          "components": [
+            { "internalType": "uint8", "name": "winsPlayerA", "type": "uint8" },
+            { "internalType": "uint8", "name": "winsPlayerB", "type": "uint8" }
+          ],
+          "internalType": "struct RockPaperScissors.PlayerWinCounter",
+          "name": "winsCounter",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum RockPaperScissors.Closer",
+          "name": "closer",
+          "type": "uint8"
+        },
+        { "internalType": "uint64", "name": "deadline", "type": "uint64" },
+        {
+          "internalType": "enum RockPaperScissors.RoomStatus",
+          "name": "status",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum RockPaperScissors.WinnerStatus",
+          "name": "winnerStatus",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "", "type": "uint256" },
+        { "internalType": "uint256", "name": "", "type": "uint256" }
+      ],
+      "name": "rounds",
+      "outputs": [
+        {
+          "internalType": "enum RockPaperScissors.Moves",
+          "name": "moveA",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum RockPaperScissors.Moves",
+          "name": "moveB",
+          "type": "uint8"
+        },
+        { "internalType": "bytes32", "name": "encrMoveA", "type": "bytes32" },
+        { "internalType": "bytes32", "name": "encrMoveB", "type": "bytes32" },
+        {
+          "internalType": "enum RockPaperScissors.RoundWinnerOutcomes",
+          "name": "winner",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum RockPaperScissors.GameStages",
+          "name": "stage",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum RockPaperScissors.RoundStages",
+          "name": "roundStage",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "fee_", "type": "uint256" }
+      ],
+      "name": "setFeePercentage",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "feeReceiver_", "type": "address" }
+      ],
+      "name": "setFeeReceiver",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "minBetAmount_",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMinimalBetAmount",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "referrerFee_", "type": "uint256" }
+      ],
+      "name": "setReferrerFee",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "closeRoomDeadline_",
+          "type": "uint64"
+        }
+      ],
+      "name": "setRoomCloseDeadline",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "newOwner", "type": "address" }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    { "stateMutability": "payable", "type": "receive" }
+  ]
+}
