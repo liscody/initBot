@@ -21,6 +21,9 @@ async function main() {
   const counter = await contract.roomIdCounter();
   console.log("Current room ID on contract", counter.toString());
   console.log("");
+
+  const activeRooms = await contract.activeRoomCounter();
+  console.log("Active rooms", activeRooms.toString());
 }
 
 main();
