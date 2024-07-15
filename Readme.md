@@ -1,0 +1,1 @@
+Simple starter for contract interaction and get some data from it. 
